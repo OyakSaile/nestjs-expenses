@@ -1,0 +1,22 @@
+version: '3.9'
+
+services:
+  postgres:
+    image: postgres
+    restart: always
+    container_name: expenses_db
+    environment:
+      - POSTGRES_USER=pguser
+      - POSTGRES_DB=mydb
+      - POSTGRES_PASSWORD=pgpassword
+    ports:
+      - '5432:5432/tcp'
+    volumes:
+      - ./dbsql/dbpostgres:/var/lib/postgresql/data
+    networks:
+      - app-network
+networks:
+  app-network:
+    driver: bridge
+  external-network:
+    external: true
