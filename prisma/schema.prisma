@@ -21,18 +21,24 @@ model User {
   Transaction Transaction[]
   createdAt   DateTime      @default(now())
   updatedAt   DateTime      @updatedAt
+
+  @@map("users")
 }
 
 model Transaction {
   id          String          @id @default(uuid())
   amount      Float
+  title       String
+  category    String
   description String?
-  date        DateTime
-  type        TransactionType
+  date        DateTime?
   user        User            @relation(fields: [userId], references: [id])
+  type        TransactionType
   userId      String
   createdAt   DateTime        @default(now())
   updatedAt   DateTime        @updatedAt
+
+  @@map("transactions")
 }
 
 enum TransactionType {
