@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { CreateTransactionsDTO } from './dto/createTransaction.dto';
 
@@ -6,17 +6,22 @@ import { CreateTransactionsDTO } from './dto/createTransaction.dto';
 export class TransactionService {
   constructor(private readonly prismaService: PrismaService) {}
   async create(data: CreateTransactionsDTO) {
+    const mockedUser = await this.prismaService.user.findFirstOrThrow();
+
+    if (!mockedUser) throw new NotFoundException('User not found');
+
     return await this.prismaService.transaction.create({
       data: {
         ...data,
-        userId: 'ec55e357-f5fe-4884-b1b7-32530b339e66',
+        userId: mockedUser?.id,
       },
     });
   }
-  async findAll(userId: string) {
+
+  async findAll(id: string) {
     return await this.prismaService.transaction.findMany({
       where: {
-        id: userId,
+        userId: id,
       },
     });
   }
